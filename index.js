@@ -4,6 +4,16 @@ const port = 8000;
 const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 
+const sassMiddleware = require('node-sass-middleware');
+
+
+app.use(sassMiddleware({
+    src: './resources/scss',
+    dest: './public/css',
+    debug: true,
+    outputStyle: 'expanded',
+    prefix: '/css'
+}));
 
 app.get('/', function(req, res){
     res.render('home');
