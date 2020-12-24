@@ -15,10 +15,6 @@ app.use(sassMiddleware({
     prefix: '/css'
 }));
 
-app.get('/', function(req, res){
-    res.render('home');
-})
-
 app.use(express.urlencoded());
 app.use(express.static('./public'));
 app.use(expressLayouts);
@@ -27,8 +23,21 @@ app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/resources/views'));
 
+app.get('/', function(req, res){
+    res.render('home');
+})
 
+app.get('/cart', function(req, res){
+    res.render('customers/cart');
+})
 
+app.get('/login', function(req, res){
+    res.render('auth/login');
+})
+
+app.get('/register', function(req, res){
+    res.render('auth/register');
+})
 
 app.listen(port, function(err){
     if (err){
