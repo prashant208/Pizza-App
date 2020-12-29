@@ -9,6 +9,8 @@ const flash = require('express-flash');
 
 
 const session = require('express-session');
+const passport = require('passport');
+const passportLocal = require('./app/config/passport-local-strategy');
 const MongoStore = require('connect-mongo')(session);
 const sassMiddleware = require('node-sass-middleware');
 
@@ -22,21 +24,17 @@ app.use(sassMiddleware({
 }));
 
 
-
-
-
 app.use(flash());
-app.use(express.urlencoded());
+// assets
 app.use(express.static('./public'));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(expressLayouts);
-
-
-
 
 // set up the view engine
+app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/resources/views'));
+
 
 // mongo store is used to store the session cookie in the db
 app.use(session({
@@ -63,9 +61,15 @@ app.use(session({
 
 // Global Middleware
 app.use(function(req, res, next) {
-    res.locals.session = req.session;
+    res.locals.session = req.session
+    res.locals.user = req.user
     next()
 });
+
+// Passport config
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.setAuthenticatedUser);
 
 app.use('/', require('./routes/web'));
 
