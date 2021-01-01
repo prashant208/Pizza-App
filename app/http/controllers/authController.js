@@ -18,7 +18,6 @@ module.exports.register = function(req, res){
 
 // render the sign in page
 module.exports.login = function(req, res){
-
     if (req.isAuthenticated()){
         return res.redirect('/');
     }
@@ -50,7 +49,10 @@ module.exports.create = function(req, res){
 
 // sign in and create a session for the user
 module.exports.createSession = function(req, res){
-    return res.redirect('/');
+    const _getRedirectUrl = (req) => {
+        return req.user.role === 'admin' ? '/admin/orders' : '/customer/orders'
+    }
+    return res.redirect(_getRedirectUrl(req));
 }   
 
 module.exports.destroySession = function(req, res){

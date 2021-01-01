@@ -1,3 +1,4 @@
+initAdmin();
 
 let addToCart = document.querySelectorAll('.add-to-cart')
 let cartCounter = document.getElementById('cartCounter');
@@ -30,3 +31,13 @@ addToCart.forEach((btn) =>{
         updateCart(pizza)
     });
 });
+
+// Remove alert message after X seconds
+const alertMsg = document.querySelector('#success-alert')
+if(alertMsg) {
+    setTimeout(() => {
+        alertMsg.remove()
+    }, 2000)
+}
+
+import {initAdmin} from "./admin.js";

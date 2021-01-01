@@ -9,9 +9,9 @@ const User = require('../../models/user');
 passport.use(new LocalStrategy({
         usernameField: 'email'
     },
-    function(email, password, done){
+    async function(email, password, done){
         // find a user and establish the identity
-        User.findOne({email: email}, function(err, user)  {
+        const user = await User.findOne({email: email}, function(err, user)  {
             if (err){
                 console.log('Error in finding user --> Passport');
                 return done(err);

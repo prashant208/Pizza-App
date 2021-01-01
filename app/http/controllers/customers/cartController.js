@@ -1,6 +1,6 @@
 const { json } = require("express");
 
-module.exports.home = function(req, res){
+module.exports.cart = function(req, res){
     res.render('customers/cart');
 }
 
