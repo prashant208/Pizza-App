@@ -13,7 +13,8 @@ const passport = require('passport');
 const passportLocal = require('./app/config/passport-local-strategy');
 const MongoStore = require('connect-mongo')(session);
 const sassMiddleware = require('node-sass-middleware');
-
+const { Server } = require('http');
+const Emitter = require('events');
 
 app.use(sassMiddleware({
     src: './resources/scss',
@@ -35,6 +36,9 @@ app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/resources/views'));
 
+// Event emitter
+const eventEmitter = new Emitter()
+app.set('eventEmitter', eventEmitter)
 
 // mongo store is used to store the session cookie in the db
 app.use(session({
@@ -74,10 +78,26 @@ app.use(passport.setAuthenticatedUser);
 app.use('/', require('./routes/web'));
 
 
-app.listen(port, function(err){
+const server = app.listen(port, function(err){
     if (err){
         console.log(`Error in running the server: ${err}`);
     }
 
     console.log(`Server is running on port: ${port}`);
 });
+
+const io = require('socket.io')(server)
+io.on('connection', (socket) =>{
+    // Join
+    socket.on('join', (orderId) => {
+        socket.join(orderId)
+    })
+})
+
+eventEmitter.on('orderUpdated', (data) => {
+    io.to(`order_${data.id}`).emit('orderUpdated', data)
+})
+
+eventEmitter.on('orderPlaced', (data) => {
+    io.to('adminRoom').emit('orderPlaced', data)
+})
